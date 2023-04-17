@@ -1,32 +1,37 @@
 package main
 
 import (
+	"errors"
 	"fmt"
-	"math"
+	"log"
+	"net/http"
 
-	"github.com/blurryContour/go-webserver/pkg"
+	"github.com/blurryContour/go-webserver/api"
 )
 
-type Vertex struct {
-	X, Y float64
-	L    float64
-}
+func getHome(w http.ResponseWriter, r *http.Request) {
+	// t := time.Now().Format(time.DateTime)
+	log.Printf("\t%s\t%s\n", r.Host, r.RequestURI)
 
-// Receivers used to add method to struct
-func (v Vertex) Abs() float64 {
-	return math.Sqrt(v.X*v.X + v.Y*v.Y)
-}
-
-func (v *Vertex) Length() {
-	v.L = math.Sqrt(v.X*v.X + v.Y*v.Y)
+	content := fmt.Sprintf("%s\n", "Home Page!")
+	w.Write([]byte(content))
 }
 
 func main() {
-	v := Vertex{3, 4, 0}
+	mux := http.NewServeMux()
 
-	fmt.Println(v.Abs())
-	fmt.Println(v.L)
+	// Add function handlers
+	mux.HandleFunc("/", getHome)
+	mux.HandleFunc("/body", api.GetBody)
+	mux.HandleFunc("/form", api.GetForm)
+	mux.HandleFunc("/formall", api.GetFormAll)
 
-	vec := pkg.Vector2{X: 3, Y: 4}
-	fmt.Println(vec.Length())
+	// Start server
+	fmt.Printf("\nStarting server...\n")
+	err := http.ListenAndServe(":80", mux)
+	if errors.Is(err, http.ErrServerClosed) {
+		log.Printf("Server closed!\n")
+	} else if err != nil {
+		log.Fatalf("Error starting server: %s\n", err)
+	}
 }

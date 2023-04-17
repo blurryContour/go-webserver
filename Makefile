@@ -40,8 +40,7 @@ dev: ## Build the binary file for development
 
 .PHONY: run
 run: ## Run the main.go file
-	@echo "Running..."
-	go run main.go
+	@go run main.go
 
 # ==============================================================================
 # Install tools
