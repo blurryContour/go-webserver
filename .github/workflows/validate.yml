@@ -31,14 +31,19 @@ jobs:
     - name: Run Server
       run: |
         go run main.go $PORT &
-        sleep 10s
-        API_URI=localhost:$PORT
-        curl -v $API_URI
-        
-    - name: Curl
-      run: | 
-        API_URI=localhost:$PORT
-        curl -v $API_URI
-        curl -X POST -d 'body content' $API_URI/body
-        curl -X POST -F 'color=black' $API_URI/form
-        curl -X POST -d 'color=black&shape=round' -H "Content-Type: application/x-www-form-urlencoded" $API_URI/formall
+        sleep 30s
+        echo "API_URI=localhost:$PORT" >> $GITHUB_ENV
+
+    # Curl parts of API    
+    - name: Curl Home
+      run: curl -v ${{ env.API_URI }}
+    
+    - name: Curl Body
+      run: curl -X POST -d 'body content' ${{ env.API_URI }}/body
+    
+    - name: Curl Form Value
+      run: curl -X POST -F 'color=black' ${{ env.API_URI }}/form
+    
+    - name: Curl Parse Form
+      run: |
+        curl -X POST -d "color=black&shape=round" -H "Content-Type: application/x-www-form-urlencoded" ${{ env.API_URI }}/formall
