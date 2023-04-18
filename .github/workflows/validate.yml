@@ -32,7 +32,9 @@ jobs:
       run: |
         go run main.go $PORT &
         sleep 10s
-    
+        API_URI=localhost:$PORT
+        curl -v $API_URI
+        
     - name: Curl
       run: | 
         API_URI=localhost:$PORT
