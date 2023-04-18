@@ -1,7 +1,10 @@
 # This workflow will build a golang project
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
 
-name: Run Server
+name: Run Server Locally
+
+env:
+  PORT: 8080
 
 on:
   push:
@@ -27,12 +30,13 @@ jobs:
 
     - name: Run Server
       run: |
-        go run main.go &
-        sleep 5s
+        go run main.go $PORT &
+        sleep 10s
     
     - name: Curl
       run: | 
-        curl -v localhost
-        curl -X POST -d 'body content' localhost/body
-        curl -X POST -F 'color=black' localhost/form
-        curl -X POST -d 'color=black&shape=round' -H "Content-Type: application/x-www-form-urlencoded" localhost/formall
+        API_URI=localhost:$PORT
+        curl -v $API_URI
+        curl -X POST -d 'body content' $API_URI/body
+        curl -X POST -F 'color=black' $API_URI/form
+        curl -X POST -d 'color=black&shape=round' -H "Content-Type: application/x-www-form-urlencoded" $API_URI/formall

@@ -5,8 +5,10 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/blurryContour/go-webserver/api"
+	"github.com/blurryContour/go-webserver/args"
 )
 
 func getHome(w http.ResponseWriter, r *http.Request) {
@@ -18,6 +20,8 @@ func getHome(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	args := args.ParseArgs(os.Args)
+
 	mux := http.NewServeMux()
 
 	// Add function handlers
@@ -27,8 +31,9 @@ func main() {
 	mux.HandleFunc("/formall", api.GetFormAll)
 
 	// Start server
-	fmt.Printf("\nStarting server...\n")
-	err := http.ListenAndServe(":80", mux)
+	addr := fmt.Sprintf(":%d", args.Port)
+	fmt.Printf("\nStarting server on %s ...\n", addr)
+	err := http.ListenAndServe(addr, mux)
 	if errors.Is(err, http.ErrServerClosed) {
 		log.Printf("Server closed!\n")
 	} else if err != nil {
