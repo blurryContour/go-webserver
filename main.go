@@ -29,6 +29,8 @@ func main() {
 	mux.HandleFunc("/body", api.GetBody)
 	mux.HandleFunc("/form", api.GetForm)
 	mux.HandleFunc("/formall", api.GetFormAll)
+	mux.HandleFunc("/compute", api.ComputeSync)
+	mux.HandleFunc("/computego", api.ComputeAsync)
 
 	// Start server
 	addr := fmt.Sprintf(":%d", args.Port)
